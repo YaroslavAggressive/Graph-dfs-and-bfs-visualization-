@@ -23,6 +23,7 @@ jobs:
         pip install -r requirements.txt
         pip install networkx
         pip install matplotlib
+        pip install imageio, os
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
