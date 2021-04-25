@@ -5,7 +5,7 @@ class MyGraph:
 
     def __init__(self, graph: dict):
         if isinstance(graph, dict):
-            self.graph = nwx.Graph(graph)
+            self.graph = nwx.DiGraph(graph)
             self.vertices = self.graph.nodes  # двумерная матрица смежности
 
     def DFS(self, start_node):  # в глубину

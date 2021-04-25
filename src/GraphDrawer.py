@@ -7,7 +7,7 @@ import os
 class GraphDrawer:
 
     def __init__(self, graph: dict, search_path: list):
-        self.graph = nwx.Graph(graph)
+        self.graph = nwx.DiGraph(graph)
         self.search_path = search_path
 
     def build_visual(self, test_num: int, show_in_ide: bool):  # test_id - номер теста, чтобы не путаться
