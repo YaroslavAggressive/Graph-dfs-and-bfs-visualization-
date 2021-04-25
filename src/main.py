@@ -36,6 +36,6 @@ print(dfs_res)
 
 grph = MyGraph(D)
 
-g_draw = GraphDrawer(G.graph, dfs_res)
+g_draw = GraphDrawer(D, dfs_res)
 result_gif = g_draw.build_visual(2, True)  # второй аргумент - показывать или нет в консоль, как рисуется bfs или dfs
 

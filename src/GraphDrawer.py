@@ -6,8 +6,8 @@ import os
 
 class GraphDrawer:
 
-    def __init__(self, graph: nwx.Graph, search_path: list):
-        self.graph = graph
+    def __init__(self, graph: dict, search_path: list):
+        self.graph = nwx.Graph(graph)
         self.search_path = search_path
 
     def build_visual(self, test_num: int, show_in_ide: bool):  # test_id - номер теста, чтобы не путаться
@@ -31,7 +31,7 @@ class GraphDrawer:
         if show_in_ide:
             plt.draw()
             plt.pause(0.5)  # задержка в отрисовке
-
+        tmp_num = 0
         for node in self.search_path:  # рисование dfs и bfs на графике
             idx = node_names.index(node)
             color_list[idx]='r'
@@ -46,7 +46,7 @@ class GraphDrawer:
                 plt.draw()
                 plt.pause(0.5)  # задержка в отрисовке
 
-            filename = "test_images//test_graph_" + str(test_num) + "//test_" + str(iter_num) + ".jpg"  # генерируем путь до файла
+            filename = "test_images//test_graph_" + str(test_num) + "//step_" + str(iter_num) + ".jpg"  # генерируем путь до файла
             filenames.append(filename)  # сохраним все имена картинок, из которых лепим гифку
 
             plt.savefig(filename)
@@ -63,7 +63,7 @@ class GraphDrawer:
             images.append(imageio.imread(filename))
         options = {'duration': 2}
         if not os.path.isdir("test_images//test_graph_" + str(test_num) + "//test_" + str(test_num) + ".gif"):  # проверка, не был ли уже создан тест с таким номером
-            result_gif = imageio.mimsave('test_' + str(test_num) + '.gif', images,
+            result_gif = imageio.mimsave('test_images//test_graph_''' + str(test_num) + '//test_' + str(test_num) + '.gif', images,
                                          'GIF', **options)  # сохраняем в рабочую директорию и отдаем обратно в программу
         else:
             print("Error: such directory already exists, rename test number")
