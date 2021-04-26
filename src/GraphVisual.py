@@ -10,7 +10,6 @@ class MyGraph:
 
     def DFS(self, start_node):  # в глубину
         nodes_colors = {node:'white' for node in self.graph.nodes}
-        nodes_stack = [start_node]
         result = []
 
         def dfs_recursive(node: str):
