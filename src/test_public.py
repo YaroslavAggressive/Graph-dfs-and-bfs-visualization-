@@ -3,8 +3,8 @@ import networkx as nwx
 from GraphVisual import MyGraph
 from GraphDrawer import GraphDrawer
 
-
-class Case:
+####
+class Case: 
     def __init__(self, name: str, test_num: int, input: dict, start_node: str, expected: list):
         self._name = name  #
         self.expected = expected  # требуемая последовательность вершин после bfs/dfs
