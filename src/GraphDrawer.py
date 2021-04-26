@@ -12,8 +12,8 @@ class GraphDrawer:
 
     def build_visual(self, test_num: int, show_in_ide: bool):  # test_id - номер теста, чтобы не путаться
 
-        if not os.path.isdir("test_images//test_graph_" + str(test_num)):  # проверка, не был ли уже создан тест с таким номером
-            os.mkdir("test_images//test_graph_" + str(test_num))
+        if not os.path.isdir("test_result//test_graph_" + str(test_num)):  # проверка, не был ли уже создан тест с таким номером
+            os.mkdir("test_result//test_graph_" + str(test_num))
         else:
             print("Error: such directory already exists, rename test number")
             return None  # пока ничего не возвращаем, не был начат процесс визуализации
@@ -46,7 +46,7 @@ class GraphDrawer:
                 plt.draw()
                 plt.pause(0.5)  # задержка в отрисовке
 
-            filename = "test_images//test_graph_" + str(test_num) + "//step_" + str(iter_num) + ".jpg"  # генерируем путь до файла
+            filename = "test_result//test_graph_" + str(test_num) + "//step_" + str(iter_num) + ".jpg"  # генерируем путь до файла
             filenames.append(filename)  # сохраним все имена картинок, из которых лепим гифку
 
             plt.savefig(filename)
@@ -62,8 +62,8 @@ class GraphDrawer:
         for filename in filenames:
             images.append(imageio.imread(filename))
         options = {'duration': 2}
-        if not os.path.isdir("test_images//test_graph_" + str(test_num) + "//test_" + str(test_num) + ".gif"):  # проверка, не был ли уже создан тест с таким номером
-            result_gif = imageio.mimsave('test_images//test_graph_''' + str(test_num) + '//test_' + str(test_num) + '.gif', images,
+        if not os.path.isdir("test_result//test_graph_" + str(test_num) + "//test_" + str(test_num) + ".gif"):  # проверка, не был ли уже создан тест с таким номером
+            result_gif = imageio.mimsave('test_result//test_graph_''' + str(test_num) + '//test_' + str(test_num) + '.gif', images,
                                          'GIF', **options)  # сохраняем в рабочую директорию и отдаем обратно в программу
         else:
             print("Error: such directory already exists, rename test number")
