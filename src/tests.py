@@ -96,8 +96,8 @@ TEST_CASES_FOR_BFS = [
 def test_breadth_first_search(bfs: Case) -> None:
     graph = MyGraph(bfs.input)
     answer = graph.BFS(bfs.start_node)
-    visual = GraphDrawer(bfs.input, answer)
-    visual.build_visual(bfs.test_num, False)  # False - не выводим на экран отрисовку
+    # visual = GraphDrawer(bfs.input, answer)  # отрисовка результата
+    # visual.build_visual(bfs.test_num, False)  # False - не выводим на экран отрисовку
     assert answer == bfs.expected
 
 
@@ -105,6 +105,6 @@ def test_breadth_first_search(bfs: Case) -> None:
 def test_depth_first_search(dfs: Case) -> None:
     graph = MyGraph(dfs.input)
     answer = graph.DFS(dfs.start_node)
-    visual = GraphDrawer(dfs.input, answer)
-    visual.build_visual(dfs.test_num, False)  # False - не выводим на экран отрисовку
+    # visual = GraphDrawer(dfs.input, answer)  # отрисовка результата
+    # visual.build_visual(dfs.test_num, False)  # False - не выводим на экран отрисовку
     assert answer == dfs.expected
