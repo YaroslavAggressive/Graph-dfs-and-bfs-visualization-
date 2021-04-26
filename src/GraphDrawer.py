@@ -12,8 +12,8 @@ class GraphDrawer:
 
     def build_visual(self, test_num: int, show_in_ide: bool):  # test_id - номер теста, чтобы не путаться
 
-        if not os.path.isdir("test_images//test_graph_" + str(test_num)):  # проверка, не был ли уже создан тест с таким номером
-            os.mkdir("test_images//test_graph_" + str(test_num))
+        if not os.path.isdir("test_results//test_graph_" + str(test_num)):  # проверка, не был ли уже создан тест с таким номером
+            os.mkdir("test_results//test_graph_" + str(test_num))
         else:
             print("Error: such directory already exists, rename test number")
             return None  # пока ничего не возвращаем, не был начат процесс визуализации
