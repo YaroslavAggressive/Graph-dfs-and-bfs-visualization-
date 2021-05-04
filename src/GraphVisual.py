@@ -1,4 +1,5 @@
 import networkx as nwx
+from collections import deque
 
 
 class MyGraph:
@@ -9,7 +10,7 @@ class MyGraph:
             self.vertices = self.graph.nodes  # двумерная матрица смежности
 
     def DFS(self, start_node):  # в глубину
-        nodes_colors = {node:'white' for node in self.graph.nodes}
+        nodes_colors = {node: 'white' for node in self.graph.nodes}
         result = []
 
         def dfs_recursive(node: str):
