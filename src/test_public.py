@@ -90,8 +90,8 @@ TEST_CASES_FOR_BFS = [Case(name=str(i) + ": " + test_names_bfs[i], test_num=i + 
 def test_breadth_first_search(bfs: Case) -> None:
     graph = MyGraph(bfs.input)
     answer = GraphTraversal.BFS(graph, bfs.start_node)
-    visual = GraphDrawer("test_images")  # rendering the result
-    visual.build_visual(graph, answer, False)  # False - do not display rendering
+    # visual = GraphDrawer("test_images")  # rendering the result
+    # visual.build_visual(graph, answer, False)  # False - do not display rendering
     assert answer == bfs.expected
 
 
@@ -99,6 +99,6 @@ def test_breadth_first_search(bfs: Case) -> None:
 def test_depth_first_search(dfs: Case) -> None:
     graph = MyGraph(dfs.input)
     answer = GraphTraversal.DFS(graph, dfs.start_node)
-    visual = GraphDrawer("test_images")  # rendering the result
-    visual.build_visual(graph, answer, False)  # False - do not display rendering
+    # visual = GraphDrawer("test_images")  # rendering the result
+    # visual.build_visual(graph, answer, False)  # False - do not display rendering
     assert answer == dfs.expected
