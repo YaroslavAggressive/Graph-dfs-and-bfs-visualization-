@@ -1,28 +1,25 @@
 import networkx as nwx
 import matplotlib.pyplot as plt
+from dataclasses import dataclass
 import imageio
 import os
+from MyGraph import MyGraph
 
 TEMP_GRAPH_IMAGE_PREFIX = "test_graph_"  # for creating unique names of pictures in directory
 STEP_NAME_PREFIX = "step_"
 TEST_PREFIX = "test_"
 
 
+@dataclass
 class GraphDrawer:
 
-    def __init__(self, dir_name: str):
-        self.dir_name = dir_name
+    dir_name: str = ""
+    tests_counter: int = 1
 
-    def build_visual(self, graph: nwx.MultiDiGraph, search_path: list, test_num: int, show_in_ide: bool):
-        # test_id - number of current test
-
+    def build_visual(self, graph: MyGraph, search_path: list, show_in_ide: bool):
         # check, that there is no test with such number
-        if not os.path.isdir(self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_num)):
-            os.mkdir(self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_num))
-        else:
-            # print("Error: such directory already exists, rename test number")
-            # return None  # returns nothing yet, it is necessary to show user, that there is an mistake here
-            raise NameError("such directory named <" + TEST_PREFIX + str(test_num) + "> already exists")
+        test_path = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(GraphDrawer.tests_counter)
+        os.mkdir(test_path)
 
         list_edges = graph.edges(data=False)
         node_names = [node for node in graph.nodes]
@@ -42,9 +39,9 @@ class GraphDrawer:
                                 arrowstyle="<|-", style="dashed")
         if show_in_ide:
             plt.draw()
-            plt.pause(0.5)  # задержка в отрисовке
+            plt.pause(0.5)  # delay in rendering
 
-        for node in search_path:  # рисование dfs и bfs на графике
+        for node in search_path:  # drawing dfs and bfs
             idx = node_names.index(node)
             color_list[idx] = 'r'
             plt.clf()
@@ -60,16 +57,18 @@ class GraphDrawer:
 
             if show_in_ide:
                 plt.draw()
-                plt.pause(0.5)  # задержка в отрисовке
+                plt.pause(0.5)  # delay in rendering
 
             # generate path to file
-            filename = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_num) + "//" + STEP_NAME_PREFIX + str(iter_num) + ".jpg"
+            filename = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(GraphDrawer.tests_counter) + "//" +\
+                       STEP_NAME_PREFIX + str(iter_num) + ".jpg"
             filenames.append(filename)  # save all the names of the pictures from which we create the gif
 
             plt.savefig(filename)
             iter_num += 1
 
-        gif = self.create_gif_result(filenames, test_num)
+        gif = self.create_gif_result(filenames, GraphDrawer.tests_counter)
+        GraphDrawer.tests_counter += 1
 
         return gif
 
@@ -79,13 +78,12 @@ class GraphDrawer:
             images.append(imageio.imread(filename))
         options = {'duration': 2}
         # check, that there is no test with such number
-        if not os.path.isdir(self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_number) + "//" + TEST_PREFIX + str(test_number)):
+        test_path = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_number) + "//" + TEST_PREFIX + str(test_number)
+        if not os.path.isdir(test_path):
             # save it to the working directory and send it back to the program
-            result_gif = imageio.mimsave(self.dir_name + '//' + TEMP_GRAPH_IMAGE_PREFIX + str(test_number) + "//" + TEST_PREFIX + str(test_number) + '.gif', images,
+            result_gif = imageio.mimsave(test_path + '.gif', images,
                                          'GIF', **options)
         else:
-            # print("Error: such directory already exists, rename test number")
-            # return None  # returns nothing yet, it is necessary to show user, that there is an mistake here
             raise NameError("such gif-file named <" + TEST_PREFIX + str(test_number) + "> already exists")
 
         return result_gif
