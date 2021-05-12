@@ -1,9 +1,9 @@
 import pytest
 import networkx as nwx
-from MyGraph import MyGraph
-from GraphDrawer import GraphDrawer
+from MyGraph import Graph
 from MyGraph import GraphTraversal
 from dataclasses import dataclass
+from GraphDrawer import GraphDrawer
 
 
 @dataclass
@@ -88,7 +88,7 @@ TEST_CASES_FOR_BFS = [Case(name=str(i) + ": " + test_names_bfs[i], test_num=i + 
 
 @pytest.mark.parametrize('bfs', TEST_CASES_FOR_BFS, ids=str)
 def test_breadth_first_search(bfs: Case) -> None:
-    graph = MyGraph(bfs.input)
+    graph = Graph(bfs.input)
     answer = GraphTraversal.BFS(graph, bfs.start_node)
     # visual = GraphDrawer("test_images")  # rendering the result
     # visual.build_visual(graph, answer, False)  # False - do not display rendering
@@ -97,7 +97,7 @@ def test_breadth_first_search(bfs: Case) -> None:
 
 @pytest.mark.parametrize('dfs', TEST_CASES_FOR_DFS, ids=str)
 def test_depth_first_search(dfs: Case) -> None:
-    graph = MyGraph(dfs.input)
+    graph = Graph(dfs.input)
     answer = GraphTraversal.DFS(graph, dfs.start_node)
     # visual = GraphDrawer("test_images")  # rendering the result
     # visual.build_visual(graph, answer, False)  # False - do not display rendering
