@@ -26,13 +26,14 @@ class Graph(nwx.MultiDiGraph):
 
 class GraphTraversal:
 
-    @classmethod  # auxiliary function for dfs main algo
-    def dfs_recursive(cls, node, graph, nodes_colors, result):
+    # auxiliary function for dfs main algo
+    @staticmethod
+    def dfs_recursive(node, graph, nodes_colors, result):
         nodes_colors[node] = NODE_IN_PROCESS
         result.append(node)
         for node_tmp in graph.neighbors(node):
             if nodes_colors[node_tmp] == NODE_NOT_VISITED:
-                cls.dfs_recursive(node_tmp, graph, nodes_colors, result)
+                GraphTraversal.dfs_recursive(node_tmp, graph, nodes_colors, result)
 
         nodes_colors[node] = NODE_WORKED
 
