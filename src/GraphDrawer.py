@@ -20,89 +20,94 @@ VISITED_NODE_COLOR = 'r'  # painting over node visited in algorithm in current c
 INDEX_LEFT_BOUND = 0  # randomly chosen borders of result images and gifs indexes, can be chosen later
 INDEX_RIGHT_BOUND = 50
 
+NODES_SIZE = 1000  # size of circle nodes in result gif and pictures
+ARROW_STYLE = "<|-"  # type of arrow in graph showing to user on result pictures and gif
+TEXT_STYLE = "dashed"  # style of text in labels on nodes and edges of result visualization of graph
+
+DELAY = 0.5  # delay of changing the rendering of the graph visualization
+VARIABLES_NAME_DELIMETER = '_'  # const for parsing string name and creating test names for pytest
+
 
 @dataclass
 class GraphDrawer:
 
-    dir_name: str = ""  # directory name, where user wants to save his visualization result
-    result_idx: int = 0  # index, randomly generated for each function "build_visual" call
-
-    def build_visual(self, graph: Graph, search_path: list, show_in_ide: bool):
+    @staticmethod
+    def build_visual(graph: Graph, search_path: list, dir_name: str, show_in_ide: bool):
         # check, that there is no test with such number
 
         # validating input directory name, if it is incorrect, raising a mistake
-        if not os.path.isdir(self.dir_name):
+        if not os.path.isdir(dir_name):
             raise FileExistsError("Error: can't find entered directory")
 
         now = datetime.datetime.now()
         seed(now.second)
-        self.result_idx = randint(INDEX_LEFT_BOUND, INDEX_RIGHT_BOUND)
-        tmp_path = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(self.result_idx)
+        result_idx = randint(INDEX_LEFT_BOUND, INDEX_RIGHT_BOUND)
+        tmp_path = dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(result_idx)
         while os.path.isdir(tmp_path):
-            self.result_idx = randint(INDEX_LEFT_BOUND, INDEX_RIGHT_BOUND)
-            tmp_path = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(self.result_idx)
+            result_idx = randint(INDEX_LEFT_BOUND, INDEX_RIGHT_BOUND)
+            tmp_path = dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(result_idx)
         os.mkdir(tmp_path)
 
         list_edges = graph.edges(data=False)
         node_names = [node for node in graph.nodes]
         color_list = [DEFAULT_NODE_COLOR for i in range(len(graph.nodes))]
-        iter_num = 1
+
 
         filenames = []
         pos = nwx.circular_layout(graph)
-        nwx.draw(graph, pos,
-                 node_size=1000,
-                 node_color=color_list,
-                 with_labels=True,
-                 arrowstyle="<|-", style="dashed")
-        nwx.draw_networkx_edges(graph, pos, edgelist=list_edges,
-                                node_size=1000,
-                                arrowstyle="<|-", style="dashed")
-        if show_in_ide:
-            plt.draw()
-            plt.pause(0.5)  # delay in rendering
 
-        for node in search_path:  # drawing dfs and bfs
+        GraphDrawer.redraw_graph_visual(graph, pos, color_list, list_edges, show_in_ide)
+
+        for iter_num, node in enumerate(search_path):  # drawing dfs and bfs
             idx = node_names.index(node)
             color_list[idx] = VISITED_NODE_COLOR
             plt.clf()
 
-            nwx.draw(graph, pos,
-                     node_size=1000,
-                     node_color=color_list,
-                     with_labels=True,
-                     arrowstyle="<|-", style="dashed")
-            nwx.draw_networkx_edges(graph, pos, edgelist=list_edges,
-                                    node_size=1000,
-                                    arrowstyle="<|-", style="dashed")
-
-            if show_in_ide:
-                plt.draw()
-                plt.pause(0.5)  # delay in rendering
+            GraphDrawer.redraw_graph_visual(graph, pos, color_list, list_edges, show_in_ide)
 
             # generate path to file
-            filename = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(self.result_idx) + "//" +\
+            filename = GraphDrawer.create_res_path(dir_name, result_idx) + "//" +\
                        STEP_NAME_PREFIX + str(iter_num) + ".jpg"
             filenames.append(filename)  # save all the names of the pictures from which we create the gif
 
             plt.savefig(filename)
-            iter_num += 1
 
-        gif = self.create_gif_result(filenames, self.result_idx)
+        gif = GraphDrawer.create_gif_result(filenames, dir_name, result_idx)
 
         return gif
 
-    def create_gif_result(self, filenames: list, test_number: int):
+    @staticmethod
+    def redraw_graph_visual(graph: Graph, pos: dict, color_list: list, list_edges: list, show_in_ide: bool):
+        nwx.draw(graph, pos,
+                 node_size=NODES_SIZE,
+                 node_color=color_list,
+                 with_labels=True,
+                 arrowstyle=ARROW_STYLE, style=TEXT_STYLE)
+        nwx.draw_networkx_edges(graph, pos, edgelist=list_edges,
+                                node_size=NODES_SIZE,
+                                arrowstyle=ARROW_STYLE, style=TEXT_STYLE)
+
+        if show_in_ide:
+            plt.draw()
+            plt.pause(DELAY)  # delay in rendering
+
+    @staticmethod
+    def create_gif_result(filenames: list, dir_name: str, test_number: int):
         images = []
         for filename in filenames:
             images.append(imageio.imread(filename))
         # check, that there is no test with such number
-        test_path = self.dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_number) + "//" + TEST_PREFIX + str(test_number)
-        if not os.path.isdir(test_path):
+        result_path = GraphDrawer.create_res_path(dir_name, test_number) + "//" + TEST_PREFIX + str(test_number)
+        if not os.path.isdir(result_path):
             # save it to the working directory and send it back to the program
-            result_gif = imageio.mimsave(test_path + '.gif', images,
+            result_gif = imageio.mimsave(result_path + '.gif', images,
                                          'GIF', **GIF_OPTIONS)
         else:
             raise NameError("such gif-file named <" + TEST_PREFIX + str(test_number) + "> already exists")
 
         return result_gif
+
+    @staticmethod
+    def create_res_path(dir_name: str, test_num: int):  # auxilary function for getting directory for result as str obj
+        return dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_num)
+

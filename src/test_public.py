@@ -5,6 +5,16 @@ from MyGraph import GraphTraversal
 from dataclasses import dataclass
 from GraphDrawer import GraphDrawer
 
+TEST_NAME_POSTFIX = "test"  # maybe redundant constant
+DFS_NAME = "dfs"
+BFS_NAME = "bfs"
+
+
+@dataclass
+class TestData:
+    test_name: str
+    test_input: dict
+
 
 @dataclass
 class Case:
@@ -16,6 +26,15 @@ class Case:
 
     def __str__(self) -> str:
         return 'test_{}'.format(self.name)
+
+
+def get_test_cases(graphs: dict, start_point: str, true_res: list, mode: str):  # creating test for dfs and bfs
+    if mode == DFS_NAME or mode == BFS_NAME:  # just in case for the future, in script the correct conditions are passed to the function
+        return [Case(name=str(iter_num) + ": " + tmp_key + mode + TEST_NAME_POSTFIX, test_num=iter_num + 1,
+                     input=graphs.get(tmp_key), start_node=start_point,
+                     expected=true_res[iter_num]) for iter_num, tmp_key in enumerate(graphs.keys())]
+    else:
+        raise NameError("An invalid name of variable value was passed")
 
 
 graph_isolated_vertex = {'A': ['C', 'D'],
@@ -57,41 +76,39 @@ graph_simple = {'A': ['C', 'D'],
                 'E': ['A']}
 
 START_POINT = 'A'
-graph_dicts = [graph_isolated_vertex, graph_complete, graph_regular, graph_parallel_edges, graph_loop, graph_simple]
-graphs_nwx = []
-for dct in graph_dicts:
-    graphs_nwx.append(nwx.MultiDiGraph(dct))
 
-test_names_dfs = ['graph with isolated vertex dfs test', 'complete graph dfs test', 'regular graph dfs test',
-                  'graph with parallel edges dfs test', 'graph with loop dfs test', 'simple graph dfs test']
-results = []
+graphs_data = {'graph with isolated vertex dfs test': graph_isolated_vertex,
+               'complete graph': graph_complete,
+               'regular graph': graph_regular,
+               'graph with parallel edges': graph_parallel_edges,
+               'graph with loop': graph_loop,
+               'simple graph': graph_simple}  # filling graph data (adjacency list and its class)
 
+graphs_nwx = []  # creating objects of implemented graph classes from networkx for using built-in methods
+for key in graphs_data.keys():
+    graphs_nwx.append(nwx.MultiDiGraph(graphs_data.get(key)))
+
+results = []  # creating correct result for comparing and checking methods
 for graph in graphs_nwx:
     tmp_res = list(nwx.algorithms.traversal.dfs_tree(graph, START_POINT))
     results.append(tmp_res)
 
-TEST_CASES_FOR_DFS = [Case(name=str(i) + ": " + test_names_dfs[i], test_num=i + 1, input=graph_dicts[i], start_node=START_POINT,
-                           expected=results[i]) for i in range(len(graph_dicts))]
+TEST_CASES_FOR_DFS = get_test_cases(graphs_data, START_POINT, results, DFS_NAME)
 
-results.clear()
+results.clear()  # creating comparison data again, but now for bfs-algo
 for graph in graphs_nwx:
     tmp_res = list(nwx.algorithms.traversal.bfs_tree(graph, START_POINT))
     results.append(tmp_res)
 
-test_names_bfs = ['graph with isolated vertex bfs test', 'complete graph bfs test', 'regular graph bfs test',
-                  'graph with parallel edges bfs test', 'graph with loop bfs test', 'simple graph bfs test']
-
 # tests are calculated on the same set of graphs as dfs
-TEST_CASES_FOR_BFS = [Case(name=str(i) + ": " + test_names_bfs[i], test_num=i + 1, input=graph_dicts[i], start_node=START_POINT,
-                           expected=results[i]) for i in range(len(graph_dicts))]
+TEST_CASES_FOR_BFS = get_test_cases(graphs_data, START_POINT, results, BFS_NAME)
 
 
 @pytest.mark.parametrize('bfs', TEST_CASES_FOR_BFS, ids=str)
 def test_breadth_first_search(bfs: Case) -> None:
     graph = Graph(bfs.input)
     answer = GraphTraversal.BFS(graph, bfs.start_node)
-    # visual = GraphDrawer("test_images")  # rendering the result
-    # visual.build_visual(graph, answer, False)  # False - do not display rendering
+    # GraphDrawer.build_visual(graph, answer, "test_images", False)  # False - do not display rendering
     assert answer == bfs.expected
 
 
@@ -99,6 +116,5 @@ def test_breadth_first_search(bfs: Case) -> None:
 def test_depth_first_search(dfs: Case) -> None:
     graph = Graph(dfs.input)
     answer = GraphTraversal.DFS(graph, dfs.start_node)
-    # visual = GraphDrawer("test_images")  # rendering the result
-    # visual.build_visual(graph, answer, False)  # False - do not display rendering
+    # GraphDrawer.build_visual(graph, answer, "test_images", False)  # False - do not display rendering
     assert answer == dfs.expected
