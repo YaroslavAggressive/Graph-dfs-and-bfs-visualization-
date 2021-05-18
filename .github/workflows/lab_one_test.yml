@@ -21,7 +21,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pytest src/testing_dfs.py src/testing_bfs.py src/test_data.py
+        pytest src/test_dfs.py src/test_bfs.py src/test_data.py
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
