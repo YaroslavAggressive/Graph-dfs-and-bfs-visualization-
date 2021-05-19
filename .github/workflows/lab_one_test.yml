@@ -2,9 +2,9 @@ name: first lab CI
 
 on:
   push:
-    branches: [ branch_for_review ]
+    branches: [ main ]
   pull_request:
-    branches: [ branch_for_review ]
+    branches: [ main ]
 
 jobs:
   build:
