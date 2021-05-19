@@ -9,16 +9,14 @@ import datetime
 from MyGraph import Graph
 
 
-TEMP_GRAPH_IMAGE_PREFIX = "test_graph_"  # for creating unique names of pictures in directory
+RES_GRAPH_IMAGE_PREFIX = "test_graph_"  # for creating unique names of pictures in directory
 STEP_NAME_PREFIX = "step_"
-TEST_PREFIX = "test_"
+RES_PREFIX = "test_"
+DEFAULT_DIRECTORY = "C:/"
 
 GIF_OPTIONS = {'duration': 2}  # constantly set duration of result gif
 DEFAULT_NODE_COLOR = 'b'
 VISITED_NODE_COLOR = 'r'  # painting over node visited in algorithm in current color (red, default - blue)
-
-INDEX_LEFT_BOUND = 0  # randomly chosen borders of result images and gifs indexes, can be chosen later
-INDEX_RIGHT_BOUND = 50
 
 NODES_SIZE = 1000  # size of circle nodes in result gif and pictures
 ARROW_STYLE = "<|-"  # type of arrow in graph showing to user on result pictures and gif
@@ -33,25 +31,15 @@ class GraphDrawer:
 
     @staticmethod
     def build_visual(graph: Graph, search_path: list, dir_name: str, show_in_ide: bool):
-        # check, that there is no test with such number
-
         # validating input directory name, if it is incorrect, raising a mistake
         if not os.path.isdir(dir_name):
             raise FileExistsError("Error: can't find entered directory")
 
-        now = datetime.datetime.now()
-        seed(now.second)
-        result_idx = randint(INDEX_LEFT_BOUND, INDEX_RIGHT_BOUND)
-        tmp_path = dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(result_idx)
-        while os.path.isdir(tmp_path):
-            result_idx = randint(INDEX_LEFT_BOUND, INDEX_RIGHT_BOUND)
-            tmp_path = dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(result_idx)
-        os.mkdir(tmp_path)
+        result_idx = GraphDrawer.create_result_dir_and_idx(dir_name)
 
         list_edges = graph.edges(data=False)
         node_names = [node for node in graph.nodes]
         color_list = [DEFAULT_NODE_COLOR for i in range(len(graph.nodes))]
-
 
         filenames = []
         pos = nwx.circular_layout(graph)
@@ -77,6 +65,16 @@ class GraphDrawer:
         return gif
 
     @staticmethod
+    def create_result_dir_and_idx(dir_name: str):  # function for creating graph result directory and its index
+        tmp_path = DEFAULT_DIRECTORY
+        result_idx = 0
+        while os.path.isdir(tmp_path):
+            result_idx = int(datetime.datetime.now().timestamp())
+            tmp_path = dir_name + "//" + RES_GRAPH_IMAGE_PREFIX + str(result_idx)
+        os.mkdir(tmp_path)
+        return result_idx
+
+    @staticmethod
     def redraw_graph_visual(graph: Graph, pos: dict, color_list: list, list_edges: list, show_in_ide: bool):
         nwx.draw(graph, pos,
                  node_size=NODES_SIZE,
@@ -97,17 +95,17 @@ class GraphDrawer:
         for filename in filenames:
             images.append(imageio.imread(filename))
         # check, that there is no test with such number
-        result_path = GraphDrawer.create_res_path(dir_name, test_number) + "//" + TEST_PREFIX + str(test_number)
+        result_path = GraphDrawer.create_res_path(dir_name, test_number) + "//" + RES_PREFIX + str(test_number)
         if not os.path.isdir(result_path):
             # save it to the working directory and send it back to the program
             result_gif = imageio.mimsave(result_path + '.gif', images,
                                          'GIF', **GIF_OPTIONS)
         else:
-            raise NameError("such gif-file named <" + TEST_PREFIX + str(test_number) + "> already exists")
+            raise NameError("such gif-file named <" + RES_PREFIX + str(test_number) + "> already exists")
 
         return result_gif
 
     @staticmethod
     def create_res_path(dir_name: str, test_num: int):  # auxilary function for getting directory for result as str obj
-        return dir_name + "//" + TEMP_GRAPH_IMAGE_PREFIX + str(test_num)
+        return dir_name + "//" + RES_GRAPH_IMAGE_PREFIX + str(test_num)
 
