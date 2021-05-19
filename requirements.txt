@@ -1,0 +1,6 @@
+flake8
+pytest
+imageio
+matplotlib
+networkx
+dataclasses
