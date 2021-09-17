@@ -1,9 +1,9 @@
 # Depth-First-Search and Breadth-First-Search visualization
 
-В данной лабораторной работе реализована визуализация алгоритмов поиска в глубину и в ширину в мультиграфе. Программа:
+In this laboratory work, the visualization of depth-first and breadth-first search algorithms in a multigraph is implemented. Program:
 
-+ Строит последовательность вершин графа, полученную при помощи алгоритма поиска в ширину/глубину в графе
-+ Отрисовывает полученный граф пользователю
-+ При запросе на отрисовку DFS или BFS сохраняет последовательность изменений в виде последовательности картинок и gif-изображения
-+ Gif и картинки также можно выводить на экран
++ Builds a sequence of graph vertices obtained using the breadth / depth search algorithm in the graph
++ Renders the resulting graph to the user
++ When requesting to draw, DFS or BFS saves the sequence of changes in the form of a sequence of pictures and gif-image
++ Gifs and pictures can also be displayed
 
